@@ -3,8 +3,8 @@
 #include<cstdlib> //for cinclear and cin ignore
 #include<vector> 
 #include<cctype>//isdigit
- // for sort method
-#include <algorithm>
+#include <algorithm>// for sort method
+#include<utility>//for pair in vector
 using namespace std;
 class Emp
 {   
@@ -14,7 +14,7 @@ class Emp
 	void add();
 	void display();
 	void search();
-	void sort();
+	void sort_fun();//only sort is method name, so changed to sortfun
 	string validname();
 	string validid();
 	int choicevalid();
@@ -36,7 +36,7 @@ do{
 			break;
 		case 3:object.search();
 		break;
-		case 4:object.sort();
+		case 4:object.sort_fun();
 		break;
 		case 5:system("cls");
 		break;
@@ -135,17 +135,17 @@ void Emp::add(){
 //removing temp file method and directly appending in same file , bcoz for larger data temp file is not safe
 }
 
-void Emp::sort()
+void Emp::sort_fun()
 {
 	ifstream myfile("emp.txt");
-	vector<string> name;
-	vector<string>id;
+	//vector<string> name;
+	//vector<string>id;
+	vector<pair<string,string>> emp;
 	string n,i;
 	int choice;
 	while(getline(myfile,n,'*')&&getline(myfile,i))
 	{
-		name.push_back(n);
-		id.push_back(i);
+		emp.push_back({n,i});
 	}
 myfile.close();
 cout<<"1) SORT_BY_NAME 2) SORT_BY_ID"<<endl;
@@ -153,49 +153,23 @@ cout<<"ENTER CHOICE"<<endl;
 choice=choicevalid();
 if(choice==1)
 {
-for(int i=0;i<name.size();i++)
-	{
-		for(int j=0;j<name.size()-i-1;j++)
-		{
-			if(name[j]>name[j+1])
-			{
-				string tempname=name[j];
-				name[j]=name[j+1];
-				name[j+1]=tempname;
-				
-				string tempid=id[j];
-				id[j]=id[j+1];
-				id[j+1]=tempid;
-			}
-		}
-	}
- /*sort(name.begin(),name.end());*/
+/* replaced bubble sort logic with sort method*/
+sort(emp.begin(),emp.end());
 	cout<<"EMPLOYESS NAME IN SORTED ORDER"<<endl;	
-	for(int i=0;i<name.size();i++)
-	cout<<name[i]<<"*"<<id[i]<<endl;
+	for(auto c:emp)
+	cout<<c.first<<" "<<c.second<<endl;
 }
 else if(choice==2)
 {
-	for(int i=0;i<id.size();i++)
-	{
-		for(int j=0;j<id.size()-i-1;j++)
-		{
-			if(id[j]>id[j+1])
-			{
-				string tempname=name[j];
-				name[j]=name[j+1];
-				name[j+1]=tempname;
-				
-				string tempid=id[j];
-				id[j]=id[j+1];
-				id[j+1]=tempid;
-			}
-		}
-	}
-	cout<<endl;
+ sort(emp.begin(),emp.end(), 
+ [](pair<string,string>a, pair<string,string>b ) 
+ { 
+ return a.second< b.second ;
+ });
+ cout<<endl;
 	cout<<"EMPLOYEES ID IN SORTED ORDER"<<endl;	
-	for(int i=0;i<id.size();i++)
-	cout<<name[i]<<"*"<<id[i]<<endl;
+	for(auto i:emp)
+	cout<<i.first<<" "<<i.second<<endl;
 }
 else
 cout<<"INVALID CHOICE"<<endl;
@@ -216,7 +190,6 @@ void Emp::search()
      int choice; 
      cout<<"1) SEARCH_ID 2) SEARCH_NAME"<<endl;
      choice=choicevalid();
-//replacing string name[100] id[100] , bcoz if emp numbers are more  , program will crash
 	vector<string> name;
 	vector<string> id;
 	string n,i;// for storing each values form file
